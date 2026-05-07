@@ -12,14 +12,28 @@ axiosClient.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("accessToken");
 
-    if (token) {
+    const publicRoutes = [
+      "/mechanic/login",
+      "/service-center/login",
+      "/admin/login",
+      "/register",
+      "/verify-otp",
+      "/resend-otp",
+     "/forgot-password",
+      "/reset-password"
+    ];
+
+    if (
+      token &&
+      !publicRoutes.some(route => config.url?.includes(route))
+    ) {
       config.headers.Authorization = `Bearer ${token}`;
     }
 
     return config;
   },
   (error) => Promise.reject(error)
-);
+);          
 
 axiosClient.interceptors.response.use(
   (response) => response,
@@ -27,23 +41,27 @@ axiosClient.interceptors.response.use(
     const originalRequest = error.config;
 
     const publicRoutes = [
-      "/register",
-      "/login",
-      "/verify-otp",
-      "/resend-otp"
-    ];
+  "/mechanic/login",
+  "/service-center/login",
+  "/admin/login",
+  "/register",
+  "/verify-otp",
+  "/resend-otp",
+  "/forgot-password",
+"/reset-password"
+];
 
-    // If request is a public route → don't attempt refresh
+    
     if (publicRoutes.some((route) => originalRequest.url?.includes(route))) {
       return Promise.reject(error);
     }
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 401 &&!originalRequest._retry &&!publicRoutes.some(route => originalRequest.url?.includes(route))) {
       originalRequest._retry = true;
 
       const refreshToken = localStorage.getItem("refreshToken");
 
-      // If no refresh token → user is not logged in
+      
       if (!refreshToken) {
         return Promise.reject(error);
       }
@@ -66,7 +84,15 @@ axiosClient.interceptors.response.use(
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
 
-        window.location.href = "/login";
+        const currentPath = window.location.pathname;
+
+if (currentPath.startsWith("/admin")) {
+  window.location.href = "/admin/login";
+} else if (currentPath.startsWith("/service-center")) {
+  window.location.href = "/service-center/login";
+} else {
+  window.location.href = "/login";
+}
 
         return Promise.reject(err);
       }

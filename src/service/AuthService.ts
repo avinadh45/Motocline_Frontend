@@ -1,40 +1,74 @@
-import type { IAuthRepository } from "../interface/IAuthRepository";
-import type { IAuthService } from "../interface/IAuthService";
-import type { RegisterDTO, VerifyOtpDTO, LoginDTO, AuthResponse } from "../interface/authinterface";
+import axiosClient from "../api/axiosClient";
+import type {
+  LoginDTO,
+  RegisterDTO,
+  AuthResponse,
+  VerifyOtpDTO,
+} from "../interface/user/authinterface";
 
-export class AuthService implements IAuthService {
-    private authRepository: IAuthRepository; 
 
-    constructor(authRepository: IAuthRepository) {
-        this.authRepository = authRepository; 
-    }
+export const Register = async (data: RegisterDTO): Promise<AuthResponse> => {
+  const { confirmPassword,...user} = data
+  const response = await axiosClient.post("/register", user);
+  return response.data;
+};
 
-    async register(data: RegisterDTO): Promise<AuthResponse> {
-        const response = await this.authRepository.register(data);
-        return response.data;
-    }
+export const verifyOtp = async (data: VerifyOtpDTO): Promise<AuthResponse> => {
+  const response = await axiosClient.post("/verify-otp", data);
+  return response.data;
+};
 
-    async verifyOtp(data: VerifyOtpDTO): Promise<AuthResponse> {
-        const response = await this.authRepository.verifyOtp(data);
-        return response.data;
-    }
+export const login = async (data: LoginDTO): Promise<AuthResponse> => {
+  const response = await axiosClient.post("/login", data);
+  const { accessToken, refreshToken } = response.data.data;
 
-    async login(data: LoginDTO): Promise<any> {
-        const response = await this.authRepository.login(data);
-        const { accessToken, refreshToken } = response.data.data;
-        
-        localStorage.setItem("accessToken", accessToken);
-        localStorage.setItem("refreshToken", refreshToken);
+  if (accessToken) {
+    localStorage.setItem("accessToken", accessToken);
+  }
 
-        return response.data;
-    }
-    async resendOtp(email:string):Promise<AuthResponse>{
-        const responce = await this.authRepository.resendOtp(email)
-        return responce.data
-    }
+  if (refreshToken) {
+    localStorage.setItem("refreshToken", refreshToken);
+  }
 
-    logout(): void {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
-    }
-}
+  return response.data;
+};
+export const resendOtp = async (email: string): Promise<AuthResponse> => {
+  const responce = await axiosClient.post("/resend-otp",{email});
+  return responce.data;
+};
+
+export const forgotPassword = async (email: string): Promise<AuthResponse> => {
+  const responce = await axiosClient.post("/forgot-password",{ email});
+  return responce.data;
+};
+
+export const resetPassword = async (
+  token: string,
+  email: string,
+  password: string,
+): Promise<AuthResponse> => {
+  const responce = await axiosClient.post("/reset-password", {
+    token,
+    email,
+    password,
+  });
+  return responce.data;
+};
+
+export const googleLogin = async (token: string): Promise<AuthResponse> => {
+  const response = await axiosClient.post("/google-login", {token});
+  const { accessToken, refreshToken } = response.data.data;
+
+
+
+  if (accessToken) localStorage.setItem("accessToken", accessToken);
+  if (refreshToken) localStorage.setItem("refreshToken", refreshToken);
+
+  return response.data;
+};
+
+//     logout(): void {
+//         localStorage.removeItem("accessToken");
+//         localStorage.removeItem("refreshToken");
+//     }
+// }

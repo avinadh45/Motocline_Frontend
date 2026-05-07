@@ -39,18 +39,12 @@
 // Fonts: Syne (headings) + DM Sans (body) — same as landing page
 // Colors: #060a14 bg, #080c18 surface, #3b82f6 brand blue, #06b6d4 cyan
 
-import { useState } from "react";
+import React, { useState } from "react";
+import { GoogleLogin } from '@react-oauth/google';
+import { useAuth } from "../../hooks/useAuth";
 // import { Link } from "react-router-dom";
 
-// ── Google icon SVG ──────────────────────────────────────────────────────────
-const GoogleIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-    <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 01-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
-    <path d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/>
-    <path d="M3.964 10.706A5.41 5.41 0 013.682 9c0-.593.102-1.17.282-1.706V4.962H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.038l3.007-2.332z" fill="#FBBC05"/>
-    <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.962L3.964 7.294C4.672 5.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
-  </svg>
-);
+
 
 // ── Eye icons ────────────────────────────────────────────────────────────────
 const EyeOpen = () => (
@@ -66,12 +60,22 @@ const EyeClosed = () => (
   </svg>
 );
 
-export default function Login({auth}: any) {
+export default function Login() {
+  const auth = useAuth()
   const [showPass, setShowPass] = useState(false);
-  // const [email, setEmail]       = useState("");
-  // const [password, setPassword] = useState("");
+  const [email, setEmail]       = useState("");
+  const [password, setPassword] = useState("");
   const [focused, setFocused]   = useState<string | null>(null);
 
+  const handleLogin = async(e:React.FormEvent)=>{
+    e.preventDefault()
+    try {
+      await auth.Login({ email,password})
+    } catch (error) {
+      console.error(error);
+      
+    }
+  }
   return (
     <>
       <style>{`
@@ -324,12 +328,38 @@ export default function Login({auth}: any) {
               <div className="form-title">Welcome back</div>
               <div className="form-sub">Please enter your details to sign in</div>
             </div>
+            {auth.error && (
+  <div style={{
+    background: "rgba(239,68,68,0.1)",
+    border: "1px solid rgba(239,68,68,0.3)",
+    color: "#ef4444",
+    padding: "10px",
+    borderRadius: "8px",
+    marginBottom: "16px",
+    textAlign: "center",
+    fontSize: "13px"
+  }}>
+    {auth.error}
+  </div>
+)}
 
             {/* Google */}
-            <button className="google-btn">
-              <GoogleIcon />
-              Continue with Google
-            </button>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px', width:300 }}>
+              <GoogleLogin
+                onSuccess={credentialResponse => {
+                  if (credentialResponse.credential) {
+                    auth.googleLoginHandler(credentialResponse.credential);
+                  }
+                }}
+                onError={() => {
+                  auth.setError('Google Login Failed');
+                }}
+                width="100%"
+                theme="outline"
+                size="large"
+                shape="rectangular"
+              />
+            </div>
 
             {/* Divider */}
             <div className="or-row">
@@ -339,7 +369,7 @@ export default function Login({auth}: any) {
             </div>
 
             {/* Email */}
-            <form onSubmit={auth.handleLogin}>
+            <form onSubmit={handleLogin}>
             <div className="field-group">
               <div className="field-label">
                 <span className="field-label-text">Email address</span>
@@ -349,8 +379,8 @@ export default function Login({auth}: any) {
                   type="email"
                   className={`field-input${focused === "email" ? " focused" : ""}`}
                   placeholder="name@gmail.com"
-                  value={auth.email}
-                  onChange={e => auth.setEmail(e.target.value)}
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
                   onFocus={() => setFocused("email")}
                   onBlur={() => setFocused(null)}
                 />
@@ -361,15 +391,15 @@ export default function Login({auth}: any) {
             <div className="field-group">
               <div className="field-label">
                 <span className="field-label-text">Password</span>
-                <a href="#" className="forgot-link">Forgot password?</a>
+                <a href="/forgot-password" className="forgot-link">Forgot password?</a>
               </div>
               <div className="input-wrap">
                 <input
                   type={showPass ? "text" : "password"}
                   className={`field-input${focused === "pass" ? " focused" : ""}`}
                   placeholder="••••••••••"
-                  value={auth.password}
-                  onChange={e => auth.setPassword(e.target.value)}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
                   onFocus={() => setFocused("pass")}
                   onBlur={() => setFocused(null)}
                 />

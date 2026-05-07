@@ -45,10 +45,17 @@
 
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useAuth } from '../../hooks/useAuth';
 
-function Register({ auth }: any) {
+function Register() {
+    const auth = useAuth()
   const navigate = useNavigate();
   const [focused, setFocused] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+const [name, setName] = useState("");
+const [password, setPassword] = useState("");
+const [confirmPassword, setConfirmPassword] = useState("");
+const [phoneNumber, setPhoneNumber] = useState("");
 
   return (
     <div className="min-h-screen bg-[#0a0d14] flex overflow-hidden font-sans">
@@ -161,15 +168,17 @@ function Register({ auth }: any) {
             </div>
           )}
 
-          <form onSubmit={auth?.handleRegister} className="space-y-4">
+          <form onSubmit={(e)=>{e.preventDefault();auth.handleRegister({
+            name,email,password,confirmPassword,phoneNumber
+          })}} className="space-y-4">
             {/* Email */}
             <Field
               id="email"
               label="Email"
               type="email"
               placeholder="you@example.com"
-              value={auth?.email ?? ''}
-              onChange={(e: any) => auth?.setEmail(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               focused={focused}
               setFocused={setFocused}
               icon={
@@ -185,8 +194,8 @@ function Register({ auth }: any) {
               label="Full Name"
               type="text"
               placeholder="John Doe"
-              value={auth?.name ?? ''}
-              onChange={(e: any) => auth?.setName(e.target.value)}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               focused={focused}
               setFocused={setFocused}
               icon={
@@ -201,9 +210,9 @@ function Register({ auth }: any) {
               id="phone"
               label="Phone Number"
               type="tel"
-              placeholder="+1 555-555-5555"
-              value={auth?.phoneNumber ?? ''}
-              onChange={(e: any) => auth?.setPhoneNumber(e.target.value)}
+              placeholder="+91 555-555-5555"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
               focused={focused}
               setFocused={setFocused}
               icon={
@@ -219,13 +228,30 @@ function Register({ auth }: any) {
               label="Password"
               type="password"
               placeholder="••••••••"
-              value={auth?.password ?? ''}
-              onChange={(e: any) => auth?.setPassword(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               focused={focused}
               setFocused={setFocused}
               icon={
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+              }
+            />
+
+            {/* Confirm Password */}
+            <Field
+              id="confirmPassword"
+              label="Confirm Password"
+              type="password"
+              placeholder="••••••••"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              focused={focused}
+              setFocused={setFocused}
+              icon={
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                 </svg>
               }
             />

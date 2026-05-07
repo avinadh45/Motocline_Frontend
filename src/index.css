@@ -32,12 +32,17 @@ body {
   background-attachment: fixed;
   color: var(--text-main);
   min-height: 100vh;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
 }
 
 .auth-container {
+  margin: auto;
   width: 100%;
   max-width: 420px;
   background: var(--glass-bg);

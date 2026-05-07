@@ -31,10 +31,13 @@
 import { useState, useRef, useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
 import type { KeyboardEvent, ClipboardEvent } from "react";
+import { useAuth } from "../../hooks/useAuth";
 
 const DIGITS = 6;
 
-export default function  Verify({auth}: any) {
+export default function  Verify() {
+  const auth = useAuth()
+  const email = localStorage.getItem("verifyEmail") || ""; 
   //  const navigate = useNavigate();
   const [otp, setOtp]  = useState<string[]>(Array(DIGITS).fill(""));
   const [status, setStatus]  = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -52,13 +55,13 @@ export default function  Verify({auth}: any) {
   const inputsRef = useRef<(HTMLInputElement | null)[]>([]);
 
   // countdown
-  useEffect(() => {
-  const storedTime = localStorage.getItem("otp_sent_time");
+//   useEffect(() => {
+//   const storedTime = localStorage.getItem("otp_sent_time");
 
-  if (!storedTime) {
-    localStorage.setItem("otp_sent_time", Date.now().toString());
-  }
-}, []);
+//   if (!storedTime) {
+//     localStorage.setItem("otp_sent_time", Date.now().toString());
+//   }
+// }, []);
 
 useEffect(() => {
 
@@ -93,7 +96,7 @@ useEffect(() => {
     const next = [...otp];
     next[i] = digit;
     setOtp(next);
-    auth.setOtp(next.join(""));
+    // auth.setOtp(next.join(""));
     if (digit && i < DIGITS - 1) focusAt(i + 1);
   };
 
@@ -124,7 +127,7 @@ useEffect(() => {
   try {
     setStatus("loading")
     const finalOtp = otp.join("")
-    await auth.handleVerify(finalOtp);
+    await auth.handleVerify({email,otp:finalOtp});
     setStatus("success")
 
     // setTimeout(() => {
@@ -136,7 +139,7 @@ useEffect(() => {
   };
 
  const handleResend = async () => {
-  await auth.handleResendOtp();
+  await auth.handleResendOtp(email);
 
   localStorage.setItem("otp_sent_time", Date.now().toString());
 
@@ -239,7 +242,7 @@ useEffect(() => {
                     We sent a 6-digit verification code to
                   </p>
                   <p className="text-white/75 text-sm font-semibold mt-1">
-                   {auth.email}
+                   {email}
                   </p>
                 </div>
 
