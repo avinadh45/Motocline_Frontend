@@ -2,31 +2,31 @@ import { Routes, Route, } from 'react-router-dom';
 // import { useAuth } from './hooks/useAuth';
 // import { useAdminAuth } from './hooks/useAdminAuth';
 
-import Dashboard from '../pages/User/Dashboard.tsx';
-import Login from '../pages/User/Login.tsx';
-import Register from '../pages/User/Register.tsx';
-import Verify from '../pages/User/Verify.tsx';
-import Landingpage from '../pages/User/Landingpage.tsx'
-import ForgotPassword from '../pages/User/forgotpassword.tsx';
- import ResetPassword from '../pages/User/Resetpassword.tsx';
-import ServiceCenterLogin from "../pages/ServiceCenter/login.tsx";
-import ServiceCenterRegister from "../pages/ServiceCenter/register.tsx";
-import ServiceCenterLayout from "../layouts/ServiceCenterLayout.tsx";
-import ServiceCenterDashboard from "../pages/ServiceCenter/Dashboard.tsx";
- import ServiceCenterMechanic from "../pages/ServiceCenter/Mechanicpage.tsx"
- import MechanicLogin from '../pages/mechanic/login.tsx';
- import MechanicBashboard from "../pages/mechanic/Dahboard.tsx"
-import AdminLogin from '../pages/admin/Login.tsx';
-import AdminDashboard from '../pages/admin/Dashboard.tsx';
-import AdminLayout from '../layouts/admin/adminLayout.tsx';
-import AdminUserlist from "../pages/admin/UserList.tsx"
-import ServiceCenterList from '../pages/admin/ServiceCenterList.tsx'
-import UserDetails from '../pages/admin/userDetails.tsx'
-import ServiceCenterDetails from '../pages/admin/ServiceCenterDetails.tsx'
-import CategoryPage from '../pages/admin/category.tsx';
-import ServiceCenterForgotPassword from "../pages/ServiceCenter/forgotpassword.tsx"
-import ServiceCenterResetPassword from "../pages/ServiceCenter/resetpassword.tsx"
- import EditCategory from "../pages/admin/EditCategory.tsx"
+import Dashboard from '../features/user/pages/Dashboard.tsx';
+import Login from '../features/user/pages/Login.tsx'
+import Register from '../features/user/pages/Register.tsx';
+import Verify from '../features/user/pages/Verify.tsx';
+import Landingpage from '../features/user/pages/Landingpage.tsx'
+import ForgotPassword from "../features/user/pages/forgotpassword.tsx"
+ import ResetPassword from '../features/user/pages/Resetpassword.tsx';
+import ServiceCenterLogin from "../features/ServiceCenter/pages/login.tsx";
+import ServiceCenterRegister from "../features/ServiceCenter/pages/register.tsx";
+import ServiceCenterLayout from "../features/ServiceCenter/layouts/ServiceCenterLayout.tsx";
+import ServiceCenterDashboard from "../features/ServiceCenter/pages/Dashboard.tsx";
+ import ServiceCenterMechanic from "../features/ServiceCenter/pages/Mechanicpage.tsx"
+ import MechanicLogin from '../features/Mechanic/pages/login.tsx';
+ import MechanicBashboard from "../features/Mechanic/pages/Dahboard.tsx"
+import AdminLogin from '../features/Admin/pages/Login.tsx';
+import AdminDashboard from '../features/Admin/pages/Dashboard.tsx';
+import AdminLayout from '../features/Admin/layout/adminLayout.tsx';
+import AdminUserlist from "../features/Admin/pages/UserList.tsx"
+import ServiceCenterList from '../features/Admin/pages/ServiceCenterList.tsx'
+import UserDetails from '../features/Admin/pages/userDetails.tsx'
+import ServiceCenterDetails from '../features/Admin/pages/ServiceCenterDetails.tsx'
+import CategoryPage from '../features/Admin/pages/category.tsx';
+import ServiceCenterForgotPassword from "../features/ServiceCenter/pages/forgotpassword.tsx"
+import ServiceCenterResetPassword from "../features/ServiceCenter/pages/resetpassword.tsx"
+ import EditCategory from "../features/Admin/pages/EditCategory.tsx"
 
 function AppRoutes() {
   // const authProps = useAuth();
